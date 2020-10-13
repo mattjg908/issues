@@ -1,6 +1,6 @@
 # Issues
 
-**TODO: Add description**
+**Exercise from *Programming Elixir >= 1.6* by Dave Thomas (not the KFC guy)
 
 ## Installation
 
