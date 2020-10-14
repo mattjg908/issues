@@ -1,3 +1,11 @@
+#---
+# Excerpted from "Programming Elixir ≥ 1.6",
+# published by The Pragmatic Bookshelf.
+# Copyrights apply to this code. It may not be used to create training material,
+# courses, books, articles, and the like. Contact us if you are in doubt.
+# We make no guarantees that this code is fit for any purpose.
+# Visit http://www.pragmaticprogrammer.com/titles/elixir16 for more book information.
+#---
 defmodule Issues.CLI do
 
   @default_count 4
@@ -11,6 +19,7 @@ defmodule Issues.CLI do
   def run(argv) do
     argv 
     |> parse_args
+    |> process
   end
 
   @doc """
@@ -22,16 +31,33 @@ defmodule Issues.CLI do
   Return a tuple of `{ user, project, count }`, or `nil` if help was given.
   """
   def parse_args(argv) do
-    parse = OptionParser.parse(argv, switches: [ help: :boolean],
-                                     aliases:  [ h:    :help   ])
-    case parse do
-
-    { [ help: true ], _,           _ } -> :help
-    { _, [ user, project, count ], _ } -> { user, project,
-                                            String.to_integer(count) }
-    { _, [ user, project ],        _ } -> { user, project, @default_count }
-    _                                  -> :help
-    end
+    OptionParser.parse(argv, switches: [ help: :boolean],
+                             aliases:  [ h:    :help   ])
+    |> elem(1)
+    |> args_to_internal_representation()
   end
 
+  def args_to_internal_representation([user, project, count]) do
+    { user, project, String.to_integer(count) }
+  end
+
+  def args_to_internal_representation([user, project]) do
+    { user, project, @default_count }
+  end
+  
+  def args_to_internal_representation(_) do # bad arg or --help
+    :help
+  end
+
+  def process(:help) do
+    IO.puts """
+    usage:  issues <user> <project> [ count | #{@default_count} ]
+    """
+    System.halt(0)
+  end
+
+  def process({user, project, _count}) do
+    Issues.GithubIssues.fetch(user, project)
+  end
+  
 end
