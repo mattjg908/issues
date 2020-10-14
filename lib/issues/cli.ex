@@ -1,11 +1,3 @@
-#---
-# Excerpted from "Programming Elixir ≥ 1.6",
-# published by The Pragmatic Bookshelf.
-# Copyrights apply to this code. It may not be used to create training material,
-# courses, books, articles, and the like. Contact us if you are in doubt.
-# We make no guarantees that this code is fit for any purpose.
-# Visit http://www.pragmaticprogrammer.com/titles/elixir16 for more book information.
-#---
 defmodule Issues.CLI do
 
   @default_count 4
@@ -44,7 +36,7 @@ defmodule Issues.CLI do
   def args_to_internal_representation([user, project]) do
     { user, project, @default_count }
   end
-  
+
   def args_to_internal_representation(_) do # bad arg or --help
     :help
   end
@@ -59,5 +51,5 @@ defmodule Issues.CLI do
   def process({user, project, _count}) do
     Issues.GithubIssues.fetch(user, project)
   end
-  
+
 end
