@@ -29,8 +29,8 @@ defmodule Issues.MixProject do
       {:ex_doc, "~> 0.20.0"},
       {:httpoison, "~> 1.0.0"},
       {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
-      {:poison, "~> 3.1"}
-      # {:dep_from_hexpm, "~> 0.3.0"},
+      {:poison, "~> 3.1"},
+      {:stream_data, "~> 0.1", only: :test}
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
     ]
   end
