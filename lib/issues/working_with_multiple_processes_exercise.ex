@@ -10,18 +10,23 @@ defmodule Issues.WorkingWithMultipleProcessesExercise do
   If either answer is no, how could you make it so?
 
   """
+
   @doc """
-  Spawns two processes
+  Issues.WorkingWithMultipleProcessesExercise.spawn_processes
+
+  ## Parameters
+     -n Positive Integer, represents how many processes you'd like to spawn
+
+  Spawns n processes
   """
-  @spec spawn_two_processes :: [pid()]
-  def spawn_two_processes do
+  @spec spawn_processes(pos_integer()) :: [pid()]
+  def spawn_processes(number_of_processes_to_spawn) do
     parent = self()
-    pid_1 = spawn fn ->
-      send(parent, {:world, self()})
+    create_process =  fn _n ->
+      spawn fn -> send(parent, {:ok, "Person#{System.unique_integer()}"}) end
     end
-    pid_2 = spawn fn ->
-      send(parent, {:world, self()})
-    end
+
+    Enum.each(1..number_of_processes_to_spawn, create_process)
   end
 
 
