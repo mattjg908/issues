@@ -26,11 +26,19 @@ defmodule Issues.WorkingWithMultipleProcessesExerciseTest do
     end
   end
 
-  describe "send_token_to_process/2" do
-    test "sends message to process" do
-      [pid_1, pid_2] = MultiProcessEx.spawn_processes(2)
-      assert_receive {:token, ^pid_1, "fred"}
-      assert_receive {:token, ^pid_2, "betty"}
+  describe "send_token_to_process/1" do
+    setup do
+      [pid_1, pid_2] = pid_list = MultiProcessEx.spawn_processes(2)
+
+      {:ok, pid_1: pid_1, pid_2: pid_2, pid_list: pid_list}
+    end
+
+    test "sends message to process",
+      %{pid_1: pid_1, pid_2: pid_2, pid_list: pid_list} do
+
+        MultiProcess.send_token_to_process(pid_list)
+        assert_receive {:token, ^pid_1, "fred"}
+        assert_receive {:token, ^pid_2, "betty"}
     end
   end
 

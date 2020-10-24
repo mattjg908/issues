@@ -38,14 +38,13 @@ defmodule Issues.WorkingWithMultipleProcessesExercise do
   Issues.WorkingWithMultipleProcessesExercise.send_token_to_process
 
   ## Parameters
-     - pid, process_id of process where the parent wants to send the message to
-     - token, unqiue token to send to process
+     - pid_list, list of pids to send tokens to
 
-  Sends unique token to spawned process
+  Sends unique tokens to spawned procesess
 
   """
-  @spec send_token_to_process(pid(), String.t()) :: any() # TODO, return what?
-  def send_token_to_process(pid, token) do
+  @spec send_token_to_process([pid()]) :: any() # TODO, return what?
+  def send_token_to_process(pid_list) do
 
   end
 
