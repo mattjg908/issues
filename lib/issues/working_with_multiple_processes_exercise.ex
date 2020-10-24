@@ -24,7 +24,12 @@ defmodule Issues.WorkingWithMultipleProcessesExercise do
   def spawn_processes(number_of_processes_to_spawn) do
     parent = self()
     create_process =  fn _n ->
-      spawn fn -> send(parent, {:ok, "Person#{System.unique_integer()}"}) end
+      # TODO, how to spawn a process that just listens for a message?
+      spawn fn ->
+        receive do
+          {:token, token} -> token
+        end
+      end
     end
 
     Enum.map(1..number_of_processes_to_spawn, create_process)
