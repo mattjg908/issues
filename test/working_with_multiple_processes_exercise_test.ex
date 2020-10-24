@@ -4,7 +4,6 @@ defmodule Issues.WorkingWithMultipleProcessesExerciseTest do
 
   alias Issues.WorkingWithMultipleProcessesExercise, as: MultiProcessEx
 
-  # trace/3 mentioned here: "https://medium.com/@hoodsuphopeshigh/testing-in-elixir-chapter-4-processes-processes-everywhere-f87ee3281bc"
 
   describe "spawn_processes/1" do
     property "spawns n processes" do
@@ -37,6 +36,8 @@ defmodule Issues.WorkingWithMultipleProcessesExerciseTest do
     test "sends tokens to processes",
       %{pid_1: pid_1, pid_2: pid_2, pid_list: pid_list} do
 
+        # trace/3 mentioned here:
+        # "https://medium.com/@hoodsuphopeshigh/testing-in-elixir-chapter-4-processes-processes-everywhere-f87ee3281bc"
         :erlang.trace(pid_1, true, [:receive])
         :erlang.trace(pid_2, true, [:receive])
 
@@ -46,19 +47,31 @@ defmodule Issues.WorkingWithMultipleProcessesExerciseTest do
         assert_receive {:trace, ^pid_2, :receive, {:token, "Name-" <> uniq_char}}
     end
 
-    test "tokens are unique",
-      %{pid_list: pid_list} do
+    test "tokens are unique", %{pid_list: pid_list} do
+      tokens = MultiProcessEx.send_token_to_process(pid_list)
+      get_token_value = fn token -> elem(token, 1) end
 
-        tokens = MultiProcessEx.send_token_to_process(pid_list)
-        get_token_value = fn token -> elem(token, 1) end
-
-        assert tokens == Enum.uniq_by(tokens, get_token_value)
+      assert tokens == Enum.uniq_by(tokens, get_token_value)
     end
   end
 
-  @tag :pending
-  test "return_to_sender/1 sends token back to sender" do
-    assert false
+  describe "return_to_sender/1" do
+    setup do
+      [pid_1, pid_2] = pid_list = MultiProcessEx.spawn_processes(2)
+
+      {:ok, pid_1: pid_1, pid_2: pid_2, pid_list: pid_list}
+    end
+
+
+    test "returns messge to the sender", %{pid_1: pid_1, pid_2: pid_2, pid_list: pid_list} do
+      :erlang.trace(pid_1, true, [:send])
+      :erlang.trace(pid_2, true, [:send])
+
+      MultiProcessEx.return_to_sender(pid_list)
+
+      assert_receive {:trace, ^pid_1, :send, {:token, "Name-" <> uniq_char}}
+      assert_receive {:trace, ^pid_2, :send, {:token, "Name-" <> uniq_char}}
+    end
   end
 
 end

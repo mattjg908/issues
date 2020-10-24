@@ -47,4 +47,16 @@ defmodule Issues.WorkingWithMultipleProcessesExercise do
   def send_token_to_process([p1, _p2] = pid_list),
     do: Enum.map(pid_list, & send(&1, {:token, "Name#{System.unique_integer()}"}))
 
+  @doc """
+  Issues.WorkingWithMultipleProcessesExercise.return_to_sender
+
+  ## Parameters
+     - parent_pid, pid of process to return a message to
+
+  Receives a token and sends it back to the process that sent it
+
+  """
+  @spec return_to_sender(pid()) :: any() # TODO, what should this return?
+  def return_to_sender(p1), do: p1
+
 end
