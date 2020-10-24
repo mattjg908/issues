@@ -24,7 +24,6 @@ defmodule Issues.WorkingWithMultipleProcessesExercise do
   def spawn_processes(number_of_processes_to_spawn) do
     parent = self()
     create_process =  fn _n ->
-      # TODO, how to spawn a process that just listens for a message?
       spawn fn ->
         receive do
           {:token, token} -> token
