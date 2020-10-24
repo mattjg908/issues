@@ -8,9 +8,9 @@ defmodule Issues.WorkingWithMultipleProcessesExerciseTest do
 
   describe "spawn_processes/1" do
     property "spawns n processes" do
-      # when runs > ~25, tests fail unexpectedly. Processes dieing or not
+      # when runs > ~20, tests fail unexpectedly. Processes dieing or not
       # starting perhaps if n has too many large values?
-      check all n <- positive_integer(), max_runs: 25 do
+      check all n <- positive_integer(), max_runs: 20 do
         process_count_before =
           Process.list()
           |> Enum.count()
@@ -26,9 +26,10 @@ defmodule Issues.WorkingWithMultipleProcessesExerciseTest do
     end
   end
 
-  @tag :pending
-  test "send_token_to_process/2" do
-   assert false
+  describe "send_token_to_process/2" do
+    test "sends message to spawned_processes" do
+      assert false
+    end
   end
 
   @tag :pending

@@ -15,9 +15,10 @@ defmodule Issues.WorkingWithMultipleProcessesExercise do
   Issues.WorkingWithMultipleProcessesExercise.spawn_processes
 
   ## Parameters
-     -n Positive Integer, represents how many processes you'd like to spawn
+     - number_of_processes_to_spawn
 
   Spawns n processes
+
   """
   @spec spawn_processes(pos_integer()) :: [pid()]
   def spawn_processes(number_of_processes_to_spawn) do
@@ -26,15 +27,21 @@ defmodule Issues.WorkingWithMultipleProcessesExercise do
       spawn fn -> send(parent, {:ok, "Person#{System.unique_integer()}"}) end
     end
 
-    Enum.each(1..number_of_processes_to_spawn, create_process)
+    Enum.map(1..number_of_processes_to_spawn, create_process)
   end
 
-
   @doc """
-  Spawns two processes, sending each one a unique token. The processes then send
-  their tokens back
+  Issues.WorkingWithMultipleProcessesExercise.send_token_to_process
+
+  ## Parameters
+     - pid, process_id of process where the parent wants to send the message to
+     - token, unqiue token to send to process
+
+  Sends unique token to spawned process
+
   """
-  def run do
+  @spec send_token_to_process(pid(), String.t()) :: any() # TODO, return what?
+  def send_token_to_process(pid, token) do
 
   end
 
