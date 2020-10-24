@@ -23,6 +23,18 @@ defmodule Issues.WorkingWithMultipleProcessesExerciseTest do
         assert process_count_before + n == process_count_after
       end
     end
+
+    test "returns messge to the sender" do
+      [pid_1] = pid_list = MultiProcessEx.spawn_processes(1)
+
+      [{:token, name}] = MultiProcessEx.send_token_to_process(pid_list)
+
+      :erlang.trace(pid_1, true, [:send])
+
+      MultiProcessEx.return_to_sender(pid_1)
+
+      assert_receive {:trace, ^pid_1, :send, {:token, ^name}}
+    end
   end
 
   # mix test.watch test/working_with_multiple_processes_exercise_test.ex
@@ -52,25 +64,6 @@ defmodule Issues.WorkingWithMultipleProcessesExerciseTest do
       get_token_value = fn token -> elem(token, 1) end
 
       assert tokens == Enum.uniq_by(tokens, get_token_value)
-    end
-  end
-
-  describe "return_to_sender/1" do
-    setup do
-      [pid_1, pid_2] = pid_list = MultiProcessEx.spawn_processes(2)
-
-      {:ok, pid_1: pid_1, pid_2: pid_2, pid_list: pid_list}
-    end
-
-
-    test "returns messge to the sender", %{pid_1: pid_1, pid_2: pid_2, pid_list: pid_list} do
-      :erlang.trace(pid_1, true, [:send])
-      :erlang.trace(pid_2, true, [:send])
-
-      MultiProcessEx.return_to_sender(pid_list)
-
-      assert_receive {:trace, ^pid_1, :send, {:token, "Name-" <> uniq_char}}
-      assert_receive {:trace, ^pid_2, :send, {:token, "Name-" <> uniq_char}}
     end
   end
 

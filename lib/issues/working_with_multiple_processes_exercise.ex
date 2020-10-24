@@ -44,7 +44,7 @@ defmodule Issues.WorkingWithMultipleProcessesExercise do
 
   """
   @spec send_token_to_process([pid()]) :: [{:token, String.t()}]
-  def send_token_to_process([p1, _p2] = pid_list),
+  def send_token_to_process(pid_list),
     do: Enum.map(pid_list, & send(&1, {:token, "Name#{System.unique_integer()}"}))
 
   @doc """
