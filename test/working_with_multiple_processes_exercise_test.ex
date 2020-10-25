@@ -1,9 +1,8 @@
 defmodule Issues.WorkingWithMultipleProcessesExerciseTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case
   use ExUnitProperties
 
   alias Issues.WorkingWithMultipleProcessesExercise, as: MultiProcessEx
-
 
   describe "spawn_processes/1" do
     property "spawns n processes" do
@@ -23,29 +22,39 @@ defmodule Issues.WorkingWithMultipleProcessesExerciseTest do
         assert process_count_before + n == process_count_after
       end
     end
-
-    test "returns messge to the sender" do
-      [pid_1] = pid_list = MultiProcessEx.spawn_processes(1)
-
-      [{:token, name}] = MultiProcessEx.send_token_to_process(pid_list)
-
-      :erlang.trace(pid_1, true, [:send])
-
-      MultiProcessEx.return_to_sender(pid_1)
-
-      assert_receive {:trace, ^pid_1, :send, {:token, ^name}}
-    end
   end
 
-  # mix test.watch test/working_with_multiple_processes_exercise_test.ex
-  describe "send_token_to_process/1" do
+  describe "send_token_back/0" do
     setup do
       [pid_1, pid_2] = pid_list = MultiProcessEx.spawn_processes(2)
 
       {:ok, pid_1: pid_1, pid_2: pid_2, pid_list: pid_list}
     end
 
-    test "sends tokens to processes",
+    test "sends token back to sender process",
+      %{pid_1: pid_1, pid_2: pid_2, pid_list: pid_list} do
+
+        :erlang.trace(pid_1, true, [:send])
+        :erlang.trace(pid_2, true, [:send])
+        MultiProcessEx.send_token_to_processes(pid_list)
+
+        parent_process = self()
+        assert_receive {:trace, ^pid_2, :send, {:token, some_token}, ^parent_process}
+        assert_receive {:trace, ^pid_1, :send, {:token, some_other_token}, ^parent_process}
+    end
+  end
+
+  describe "send_token_to_processes/1" do
+    setup do
+      [pid_1, pid_2] = pid_list = MultiProcessEx.spawn_processes(2)
+
+      {:ok, pid_1: pid_1, pid_2: pid_2, pid_list: pid_list}
+    end
+
+    # TODO, how do I change this to test that parent process sends tokens to
+    # spawned processes instead of testing the spawned processes receive
+    # messages?
+    test "receives unique tokens",
       %{pid_1: pid_1, pid_2: pid_2, pid_list: pid_list} do
 
         # trace/3 mentioned here:
@@ -53,17 +62,13 @@ defmodule Issues.WorkingWithMultipleProcessesExerciseTest do
         :erlang.trace(pid_1, true, [:receive])
         :erlang.trace(pid_2, true, [:receive])
 
-        MultiProcessEx.send_token_to_process(pid_list)
+        MultiProcessEx.send_token_to_processes(pid_list)
 
-        assert_receive {:trace, ^pid_1, :receive, {:token, "Name-" <> uniq_char}}
-        assert_receive {:trace, ^pid_2, :receive, {:token, "Name-" <> uniq_char}}
-    end
+        parent_process = self()
+        assert_receive {:trace, ^pid_1, :receive, {:token, some_other_token, ^parent_process}}
+        assert_receive {:trace, ^pid_2, :receive, {:token, some_token, ^parent_process}}
 
-    test "tokens are unique", %{pid_list: pid_list} do
-      tokens = MultiProcessEx.send_token_to_process(pid_list)
-      get_token_value = fn token -> elem(token, 1) end
-
-      assert tokens == Enum.uniq_by(tokens, get_token_value)
+        assert some_token != some_other_token
     end
   end
 
