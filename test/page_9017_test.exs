@@ -6,7 +6,7 @@ defmodule Issues.Page9017Test do
 
   describe "exercise_3/0" do
     test "it receives a message from a process which is not alive" do
-      Page9017.exercise_03()
+      Page9017.exercise_3()
       assert_receive {:hello, "world"}
     end
   end
@@ -16,7 +16,7 @@ defmodule Issues.Page9017Test do
     end
 
     @tag :pending
-    test "", do
+    test "" do
     end
   end
 
@@ -25,7 +25,7 @@ defmodule Issues.Page9017Test do
     end
 
     @tag :pending
-    test "", do
+    test "" do
     end
   end
 
