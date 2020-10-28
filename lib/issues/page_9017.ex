@@ -22,11 +22,10 @@ defmodule Issues.Page9017 do
   @spec exercise_3 :: any()
   def exercise_3 do
     parent = self()
-
-    spawn_link fn -> send(parent, {:hello, "world"}) end
-    sleep 500
-
-    receive_message()
+    fn ->
+      spawn_link fn -> send(parent, {:hello, "world"}) end
+    end
+    |> run()
   end
 
   @doc """
@@ -37,21 +36,48 @@ defmodule Issues.Page9017 do
   """
   @spec exercise_4 :: any()
   def exercise_4 do
-    parent = self()
-
-    spawn_link fn -> send(parent, raise "Some exception message") end
-    sleep 500
-    receive_message()
+    fn ->
+      spawn_link fn -> raise "Some exception message" end
+    end
+    |> run()
   end
 
   @doc """
-  Issues.Page9017.exercise_5
+  Issues.Page9017.exercise_5a
 
-  Repeat the two, changing spawn_link to spawn_monitor
+  Repeat the exercise_3, changing spawn_link to spawn_monitor
 
   """
-  @spec exercise_5 :: any()
-  def exercise_5 do
+  @spec exercise_5a :: any()
+  def exercise_5a do
+    parent = self()
+    fn ->
+      spawn_monitor fn -> send(parent, {:hello, "world"}) end
+    end
+    |> run()
+  end
+
+  @doc """
+  Issues.Page9017.exercise_5b
+
+  Repeat the exercise_4, changing spawn_link to spawn_monitor
+
+  """
+  @spec exercise_5b :: any()
+  def exercise_5b do
+    fn ->
+      spawn_monitor fn -> raise "Some exception message" end
+    end
+    |> run()
+  end
+
+  @spec run(fun()) :: any()
+  defp run(spawn_link_func) do
+    spawn_link_func.()
+
+    sleep 500
+
+    receive_message()
   end
 
   defp receive_message do

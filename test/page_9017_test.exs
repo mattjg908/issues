@@ -7,8 +7,7 @@ defmodule Issues.Page9017Test do
   alias Issues.Page9017
 
   describe "exercise_3/0" do
-    @tag :pending
-    test "it receives a message from a process which already exited" do
+    test "it receives a message from a process which already exited (when linked)" do
       receive_msg_output = fn ->
         Page9017.exercise_3()
       end
@@ -19,25 +18,17 @@ defmodule Issues.Page9017Test do
 
   describe "exercise_4/0" do
 
-    test "it communicates to the parent that an exception was raised" do
+    test "it communicates to the parent that an exception was raised (when linked)" do
       Process.flag(:trap_exit, true)
       pid = spawn_link(fn ->  Page9017.exercise_4() end)
       assert_receive {
         :EXIT,
         ^pid,
         {
-          %RuntimeError{message: "Some exception message"}, _other_file_info
+          %RuntimeError{message: "Some exception message"},
+          _other_file_info
         }
       }
-    end
-  end
-
-  describe "exercise_5/0" do
-    setup do
-    end
-
-    @tag :pending
-    test "" do
     end
   end
 
