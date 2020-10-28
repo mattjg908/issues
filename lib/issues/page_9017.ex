@@ -26,25 +26,22 @@ defmodule Issues.Page9017 do
     spawn_link fn -> send(parent, {:hello, "world"}) end
     sleep 500
 
-    receive do
-      msg ->
-        IO.inspect msg
-    after 1000 ->
-        IO.puts "Waited 1 second and didn't receive any messages"
-    end
+    receive_message()
   end
 
   @doc """
   Issues.Page9017.exercise_4
 
-  Use spawn_link to start a process, and have that process send a
-  message to the parent and then exit immediately. Meanwhile, sleep
-  for 500 ms in the parent, then receive as many messages as are
-  waiting. Trace what you receive.
+  Do the same as in exercise_3 but raise an exception instead.
 
   """
   @spec exercise_4 :: any()
   def exercise_4 do
+    parent = self()
+
+    spawn_link fn -> send(parent, raise "Some exception message") end
+    sleep 500
+    receive_message()
   end
 
   @doc """
@@ -55,6 +52,15 @@ defmodule Issues.Page9017 do
   """
   @spec exercise_5 :: any()
   def exercise_5 do
+  end
+
+  defp receive_message do
+    receive do
+      msg ->
+        IO.inspect msg
+    after 1000 ->
+        IO.puts "Waited 1 second and didn't receive any messages"
+    end
   end
 
 end
