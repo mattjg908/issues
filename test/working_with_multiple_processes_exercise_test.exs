@@ -9,6 +9,7 @@ defmodule Issues.WorkingWithMultipleProcessesExerciseTest do
       # when runs > ~20, tests fail unexpectedly. Processes dieing or not
       # starting perhaps if n has too many large values?
       check all n <- positive_integer(), max_runs: 20 do
+      :q
         process_count_before =
           Process.list()
           |> Enum.count()
