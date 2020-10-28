@@ -17,11 +17,14 @@ defmodule Issues.Page9017Test do
   end
 
   describe "exercise_4/0" do
-    setup do
-    end
 
-    @tag :pending
-    test "" do
+    test "it recieves a message from a process which has raised an exception" do
+      receive_msg_output = fn ->
+        Page9017.exercise_4()
+      end
+
+      assert capture_io(receive_msg_output) == "Some exception message"
+
     end
   end
 
