@@ -2,12 +2,17 @@ defmodule Issues.Page9017Test do
   use ExUnit.Case
   use ExUnitProperties
 
+  import ExUnit.CaptureIO
+
   alias Issues.Page9017
 
   describe "exercise_3/0" do
-    test "it receives a message from a process which is not alive" do
-      Page9017.exercise_3()
-      assert_receive {:hello, "world"}
+    test "it receives a message from a process which already exited" do
+      receive_msg_output = fn ->
+        Page9017.exercise_3()
+      end
+
+      assert capture_io(receive_msg_output) == "{:hello, \"world\"}\n"
     end
   end
 
