@@ -21,6 +21,17 @@ defmodule Issues.Page9017 do
   """
   @spec exercise_3 :: any()
   def exercise_3 do
+    parent = self()
+
+    spawn_link fn -> send(parent, {:hello, "world"}) end
+    sleep 500
+
+    receive do
+      msg ->
+        IO.inspect msg
+    after 1000 ->
+        IO.puts "Waited 1 second and didn't receive any messages"
+    end
   end
 
   @doc """
